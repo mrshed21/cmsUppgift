@@ -1,5 +1,6 @@
 import { apiPlugin, storyblokInit, getStoryblokApi } from "@storyblok/react/rsc";
 import { unstable_noStore as noStore } from "next/cache";
+import { draftMode } from "next/headers";
 import Hero from "@/components/blocks/Hero";
 import FeatureItem from "@/components/blocks/FeatureItem";
 import FeatureGrid from "@/components/blocks/FeatureGrid";
@@ -21,14 +22,26 @@ storyblokInit({
   apiOptions: { region: "eu" },
 });
 
-const CONTENT_VERSION = process.env.STORYBLOK_VERSION || "published";
+/**
+ * Dynamically checks if Next.js Draft Mode is enabled or uses the env variable.
+ */
+async function getVersion() {
+  try {
+    const draft = await draftMode();
+    if (draft.isEnabled) {
+      return "draft";
+    }
+  } catch (e) {
+    // Expected to throw if called outside of a request context (e.g., generateStaticParams)
+  }
+  return process.env.STORYBLOK_VERSION || "published";
+}
 
 /**
  * In draft mode: We bypass the cache completely - every call gets fresh data from Storyblok.
- * In published mode: We let Next.js use standard ISR or on-demand revalidation.
  */
-function bypassCacheIfDraft() {
-  if (CONTENT_VERSION === "draft") {
+function bypassCacheIfDraft(version) {
+  if (version === "draft") {
     noStore();
   }
 }
@@ -36,12 +49,13 @@ function bypassCacheIfDraft() {
 // ============ Jobs ============
 
 export async function getJobs({ department, searchTerm } = {}) {
-  bypassCacheIfDraft();
+  const version = await getVersion();
+  bypassCacheIfDraft(version);
   const sbApi = getStoryblokApi();
   const params = {
     starts_with: "jobs/",
     content_type: "job-post",
-    version: CONTENT_VERSION,
+    version: version,
     sort_by: "content.publishedAt:desc",
   };
   if (department) {
@@ -55,11 +69,12 @@ export async function getJobs({ department, searchTerm } = {}) {
 }
 
 export async function getJob(slug) {
-  bypassCacheIfDraft();
+  const version = await getVersion();
+  bypassCacheIfDraft(version);
   try {
     const sbApi = getStoryblokApi();
     const { data } = await sbApi.get(`cdn/stories/jobs/${slug}`, {
-      version: CONTENT_VERSION,
+      version: version,
     });
     return data.story;
   } catch (error) {
@@ -71,21 +86,23 @@ export async function getJob(slug) {
 // ============ Datasources ============
 
 export async function getDatasourceMap(slug) {
-  bypassCacheIfDraft();
+  const version = await getVersion();
+  bypassCacheIfDraft(version);
   const sbApi = getStoryblokApi();
   const { data } = await sbApi.get("cdn/datasource_entries", {
     datasource: slug,
-    version: CONTENT_VERSION,
+    version: version,
   });
   return new Map(data.datasource_entries.map((e) => [e.value, e.name]));
 }
 
 export async function getDatasourceEntries(slug) {
-  bypassCacheIfDraft();
+  const version = await getVersion();
+  bypassCacheIfDraft(version);
   const sbApi = getStoryblokApi();
   const { data } = await sbApi.get("cdn/datasource_entries", {
     datasource: slug,
-    version: CONTENT_VERSION,
+    version: version,
   });
   return data.datasource_entries;
 }
@@ -93,11 +110,12 @@ export async function getDatasourceEntries(slug) {
 // ============ Pages (blocks-based) ============
 
 export async function getPage(slug) {
-  bypassCacheIfDraft();
+  const version = await getVersion();
+  bypassCacheIfDraft(version);
   try {
     const sbApi = getStoryblokApi();
     const { data } = await sbApi.get(`cdn/stories/${slug}`, {
-      version: CONTENT_VERSION,
+      version: version,
     });
     return data.story;
   } catch (error) {
@@ -107,12 +125,11 @@ export async function getPage(slug) {
 }
 
 export async function getPageSlugs() {
-  // Note: We don't call bypassCacheIfDraft here because this is only
-  // called from generateStaticParams at build time (server builds the slugs list).
+  const version = await getVersion();
   const sbApi = getStoryblokApi();
   const { data } = await sbApi.get("cdn/stories", {
     content_type: "page",
-    version: CONTENT_VERSION,
+    version: version,
   });
   return data.stories.map((s) => s.slug);
 }
