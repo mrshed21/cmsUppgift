@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StoryblokServerRichText } from "@storyblok/react/rsc";
+import { StoryblokServerRichText, StoryblokLiveEditing } from "@storyblok/react/rsc";
 import { getJob, getJobs, getDatasourceMap } from "@/lib/storyblok";
 
 // Using Webhook for On-Demand Revalidation instead of time-based ISR
@@ -59,6 +59,7 @@ export default async function JobDetailPage({ params }) {
 
   return (
     <main className="flex-1 px-6 py-12 md:py-20">
+      <StoryblokLiveEditing story={job} />
       <div className="mx-auto max-w-3xl">
         <Link
           href="/jobs"
