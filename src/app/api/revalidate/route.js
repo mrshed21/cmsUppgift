@@ -20,8 +20,8 @@ export async function POST(request) {
     // Always revalidate the jobs list
     revalidatePath("/jobs");
     
-    // Revalidate everything just in case
-    revalidatePath("/", "layout");
+    // Revalidate everything just in case 
+    // revalidatePath("/", "layout");
 
     return NextResponse.json({ revalidated: true, now: Date.now(), slug: payload.full_slug });
   } catch (err) {
