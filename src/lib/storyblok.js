@@ -29,7 +29,7 @@ function bypassCacheIfDraft() {
   }
 }
 
-// ============ Jobs ============
+// ============ Jobs ============ 
 
 export async function getJobs({ department, searchTerm } = {}) {
   bypassCacheIfDraft();
