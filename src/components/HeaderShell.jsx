@@ -12,10 +12,15 @@ import { useEffect, useState } from "react";
 export default function HeaderShell({ logoText, desktopNav, mobileNav }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [lastPathname, setLastPathname] = useState(pathname);
 
-  useEffect(() => {
+  // Close the mobile menu whenever the route changes.
+  // Adjusting state during render (instead of in an effect) avoids the extra
+  // render pass that `setState` inside `useEffect` causes.
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (mobileOpen) {
