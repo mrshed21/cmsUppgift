@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { StoryblokServerRichText, StoryblokLiveEditing } from "@storyblok/react/rsc";
+import { renderRichText, StoryblokLiveEditing } from "@storyblok/react/rsc";
 import { getJob, getJobs, getDatasourceMap } from "@/lib/storyblok";
 
 // Using Webhook for On-Demand Revalidation instead of time-based ISR
@@ -110,7 +110,7 @@ export default async function JobDetailPage({ params }) {
 
         {content && (
           <article className="glass-card p-8 md:p-10 prose-glass">
-            <StoryblokServerRichText document={content} />
+            <div dangerouslySetInnerHTML={{ __html: renderRichText(content) }} />
           </article>
         )}
       </div>
