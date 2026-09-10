@@ -5,6 +5,8 @@ import FeatureItem from "@/components/blocks/FeatureItem";
 import FeatureGrid from "@/components/blocks/FeatureGrid";
 import TextSection from "@/components/blocks/TextSection";
 import CtaSection from "@/components/blocks/CtaSection";
+import Toolbar from "@/components/blocks/Toolbar";
+import JobList from "@/components/blocks/JobList";
 
 const components = {
   hero: Hero,
@@ -12,6 +14,8 @@ const components = {
   feature_grid: FeatureGrid,
   text_section: TextSection,
   cta_section: CtaSection,
+  toolbar: Toolbar,
+  job_list: JobList,
 };
 
 storyblokInit({
