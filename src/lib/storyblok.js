@@ -9,6 +9,10 @@ import Toolbar from "@/components/blocks/Toolbar";
 import DepartmentFilter from "@/components/blocks/DepartmentFilter";
 import SearchBar from "@/components/blocks/SearchBar";
 import JobList from "@/components/blocks/JobList";
+import Header from "@/components/blocks/Header";
+import NavItem from "@/components/blocks/NavItem";
+import Footer from "@/components/blocks/Footer";
+import FooterLink from "@/components/blocks/FooterLink";
 
 const components = {
   hero: Hero,
@@ -20,6 +24,10 @@ const components = {
   "department-filter": DepartmentFilter,
   "search-bar": SearchBar,
   job_list: JobList,
+  header: Header,
+  nav_item: NavItem,
+  footer: Footer,
+  footer_link: FooterLink,
 };
 
 storyblokInit({
@@ -117,4 +125,20 @@ export async function getPageSlugs() {
     version: CONTENT_VERSION,
   });
   return data.stories.map((s) => s.slug);
+}
+
+// ============ Global config (header / footer) ============
+
+export async function getConfig() {
+  bypassCacheIfDraft();
+  try {
+    const sbApi = getStoryblokApi();
+    const { data } = await sbApi.get("cdn/stories/config", {
+      version: CONTENT_VERSION,
+    });
+    return data.story;
+  } catch (error) {
+    if (error?.status === 404 || error?.response?.status === 404) return null;
+    throw error;
+  }
 }
