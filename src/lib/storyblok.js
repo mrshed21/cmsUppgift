@@ -6,6 +6,8 @@ import FeatureGrid from "@/components/blocks/FeatureGrid";
 import TextSection from "@/components/blocks/TextSection";
 import CtaSection from "@/components/blocks/CtaSection";
 import Toolbar from "@/components/blocks/Toolbar";
+import DepartmentFilter from "@/components/blocks/DepartmentFilter";
+import SearchBar from "@/components/blocks/SearchBar";
 import JobList from "@/components/blocks/JobList";
 
 const components = {
@@ -15,6 +17,8 @@ const components = {
   text_section: TextSection,
   cta_section: CtaSection,
   toolbar: Toolbar,
+  "department-filter": DepartmentFilter,
+  "search-bar": SearchBar,
   job_list: JobList,
 };
 
