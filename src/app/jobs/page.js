@@ -12,7 +12,7 @@ export default async function JobsPage({ searchParams }) {
   const department = sp?.department;
   const searchTerm = sp?.q;
 
-  const page = await getPage("jobs/");
+  const page = await getPage("jobs");
 
   if (!page) {
     notFound();
