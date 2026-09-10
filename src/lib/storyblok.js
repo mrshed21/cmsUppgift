@@ -4,7 +4,6 @@ import Hero from "@/components/blocks/Hero";
 import FeatureItem from "@/components/blocks/FeatureItem";
 import FeatureGrid from "@/components/blocks/FeatureGrid";
 import TextSection from "@/components/blocks/TextSection";
-import CtaSection from "@/components/blocks/CtaSection";
 import Toolbar from "@/components/blocks/Toolbar";
 import DepartmentFilter from "@/components/blocks/DepartmentFilter";
 import SearchBar from "@/components/blocks/SearchBar";
@@ -19,7 +18,6 @@ const components = {
   feature_item: FeatureItem,
   feature_grid: FeatureGrid,
   text_section: TextSection,
-  cta_section: CtaSection,
   toolbar: Toolbar,
   "department-filter": DepartmentFilter,
   "search-bar": SearchBar,
@@ -124,7 +122,9 @@ export async function getPageSlugs() {
     content_type: "page",
     version: CONTENT_VERSION,
   });
-  return data.stories.map((s) => s.slug);
+  // `home` is served by src/app/page.js at "/", so it must not also
+  // produce a "/home" route from the [slug] segment.
+  return data.stories.map((s) => s.slug).filter((slug) => slug !== "home");
 }
 
 // ============ Global config (header / footer) ============

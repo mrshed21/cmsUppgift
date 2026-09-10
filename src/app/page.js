@@ -1,22 +1,22 @@
-import Link from "next/link";
+import { notFound } from "next/navigation";
+import { StoryblokServerComponent, StoryblokLiveEditing } from "@storyblok/react/rsc";
+import { getPage } from "@/lib/storyblok";
 
-export default function Home() {
+export default async function Home() {
+  const page = await getPage("home");
+
+  if (!page) notFound();
+
+  const body = page.content?.body || [];
+
   return (
-    <main className="flex flex-1 items-center justify-center px-6 py-24">
-      <div className="glass-card max-w-xl w-full p-10 text-center">
-        <p className="text-sm uppercase tracking-widest text-dim mb-4">
-          Under utveckling
-        </p>
-        <h1 className="text-4xl font-semibold mb-4 text-gradient">
-          Jobbannonser
-        </h1>
-        <p className="text-muted mb-8">
-          Hitta ditt nästa jobb bland våra lediga tjänster.
-        </p>
-        <Link href="/jobs" className="glass-button">
-          Se lediga tjänster →
-        </Link>
-      </div>
+    <main className="flex flex-1 flex-col">
+      {/* Loads Storyblok Bridge for live editing - only works inside the Visual Editor */}
+      <StoryblokLiveEditing story={page} />
+
+      {body.map((blok) => (
+        <StoryblokServerComponent blok={blok} key={blok._uid} />
+      ))}
     </main>
   );
 }
