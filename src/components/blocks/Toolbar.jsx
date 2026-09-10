@@ -1,8 +1,11 @@
-import Link from "next/link";
+import { getDatasourceEntries } from "@/lib/storyblok";
+import { storyblokEditable } from "@storyblok/react/rsc";
 
-export default function DepartmentFilter({ departments, active, searchTerm }) {
+export default async function Toolbar({ blok, department: active, searchTerm }) {
+  const departments = await getDatasourceEntries("job-departments");
+
   return (
-    <div className="mb-8 p-4 glass-card rounded-lg">
+    <div {...storyblokEditable(blok)} className="mb-8 p-4 glass-card rounded-lg">
       <form method="get" action="/jobs" className="flex flex-col sm:flex-row gap-4 items-center">
         {/* Search Bar */}
         <div className="flex-1 w-full">
